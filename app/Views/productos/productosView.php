@@ -1,13 +1,13 @@
 <?= view('commons/head'); ?>
 <header>
-    <div class="form-row">
+<div class="form-row">
 
         <div class="form-group col-md-4"><br>
             <a href="<?= base_url() ?>"><img src="<?= base_url() ?>/public/img/return.png" class="imagen" alt="..." width="30">
             </a>
         </div>
         <div class="form-group col-md-4">
-            <h3 class="titulo">Clientes</h3>
+            <h3 class="titulo">Productos</h3>
         </div>
         <div class="form-group col-md-4">
 
@@ -22,50 +22,25 @@
             <form class="form-clientes" method="POST">
                 <div class="form-row">
                     <!-- -->
-                    <input type="number" id="id_cliente" name="id_cliente" hidden>
+                    <input type="number" id="id_producto" name="id_producto" hidden>
                     <!-- -->
                     <div class="form-group col-md-4">
-                        <label for="inputEmail4">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre del cliente" required>
+                        <label for="inputEmail4">Nombre del producto</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Producto" required>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="inputPassword4">Apellido</label>
-                        <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Apellido del cliente" required>
+                        <label for="inputPassword4">Precio</label>
+                        <input type="number" class="form-control" id="precio" name="precio" step="0.01" min="0" placeholder="$">
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="inputAddress">Direccion</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion" placeholder="1234 Main St" required>
+                        <label for="inputAddress">Stock</label>
+                        <input type="number" class="form-control" id="stock" name="stock" placeholder="1" required>
                     </div>
                 </div>
 
-
                 <div class="form-row">
                     <div class="form-group col-md-3">
-                        <label for="date">Fecha nacimiento</label>
-                        <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" placeholder=" ">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="telefono">Telefono</label>
-                        <input type="text" class="form-control" id="telefono" name="telefono" placeholder="+(503) 7777-5555" required>
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="emaildelcliente@email.com" required>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="inputState">Categoria</label>
-                        <select id="categoria" class="form-control" name="categoria" required>
-                            <option>Selecciona...</option>
-                            <option value="1" selected>Uno</option>
-                            <option value="2">Dos</option>
-                            <option value="3">Tres</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <button type="submit" class="btn btn-primary" id="guardarbtn">Guardar</button>
+                        <button type="submit" class="btn btn-primary" id="guardarbtn">Almacenar</button>
                     </div>
                 </div>
             </form>
@@ -80,21 +55,17 @@
 
 
             <br>
-            <h4>Clientes registrados</h4>
+            <h4>Productos registrados</h4>
             <h6>Da click sobre la fila que desees editar</h6>
             <br>
             <!--tabla -->
-            <table class="table table-striped table-dark" id="clientTable">
+            <table class="table table-striped table-dark" id="productosTable">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Nombre</th>
-                        <th scope="col">Apellido</th>
-                        <th scope="col">Direccion</th>
-                        <th scope="col">fecha Nacimiento</th>
-                        <th scope="col">Telefono</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Categoria</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Stock</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -109,20 +80,20 @@
     </div>
     <?= view('commons/footer'); ?>
     <!--verificando el estado del form -->
-    <script>
+     <script>
         $(window).on('load', function() {
-            if ($('#id_cliente').val() == '') {
+            if ($('#id_producto').val() == '') {
                 console.log(" no existe un identidicador, no hay registro a editar");
                 $('#actualizarbtn').prop('disabled', true);
                 $('#eliminarbtn').prop('disabled', true);
             }
         });
-    </script>
+    </script> 
     <!--Leyendo informacion de la base de datos -->
-    <script>
+     <script>
         $(document).ready(function() {
             $.ajax({
-                    url: base_url + 'Cliente/readClient',
+                    url: base_url + 'Producto/readProducto',
                     type: 'POST',
                     dataType: 'json',
                 })
@@ -131,7 +102,7 @@
                         console.log("success", data.msj.success);
                         // location.reload();
                         $.each(data.data, function(idx, opt) {
-                            $('#clientTable').append('<tr><td>' + opt.id_cliente + '</td><td>' + opt.nombre + '</td><td>' + opt.apellido + '</td><td>' + opt.direccion + '</td><td>' + opt.fecha_nacimiento + '</td><td>' + opt.telefono + '</td><td>' + opt.email + '</td><td>' + opt.id_categoria);
+                            $('#productosTable').append('<tr><td>' + opt.id_producto + '</td><td>' + opt.nombre + '</td><td>' + opt.precio + '</td><td>' + opt.stock );
                         });
                     } else {
                         console.log("error", data.msj.error + " code=" + data.code);
@@ -145,40 +116,39 @@
 
 
         });
-    </script>
+    </script> 
     <!--Manipulando los registros de la tabla -->
-    <script>
-        $('#clientTable').on('click', 'tr', function() {
+     <script>
+        $('#productosTable').on('click', 'tr', function() {
             var fila = $(this);
-            var id_cliente = fila.find('td:eq(0)').text();
+            var id_producto = fila.find('td:eq(0)').text();
             var nombre = fila.find('td:eq(1)').text();
-            var apellido = fila.find('td:eq(2)').text();
-            var direccion = fila.find('td:eq(3)').text();
-            var fecha_nacimiento = fila.find('td:eq(4)').text();
-            var telefono = fila.find('td:eq(5)').text();
-            var email = fila.find('td:eq(6)').text();
-            var id_categoria = fila.find('td:eq(7)').text();
+            var precio = fila.find('td:eq(2)').text();
+            var stock = fila.find('td:eq(3)').text();
+            
 
-            $('#id_cliente').val(id_cliente);
+            $('#id_producto').val(id_producto);
             $('#nombre').val(nombre);
-            $('#apellido').val(apellido);
-            $('#direccion').val(direccion);
-            $('#fecha_nacimiento').val(fecha_nacimiento);
-            $('#telefono').val(telefono);
-            $('#email').val(email);
-            $('#categoria').val(id_categoria);
-
+            $('#precio').val(precio);
+            $('#stock').val(stock);
+           
             $('#actualizarbtn').prop('disabled', false);
             $('#eliminarbtn').prop('disabled', false);
             $('#guardarbtn').prop('disabled', true);
 
         });
-    </script>
-    <!-- Creando nuevo cliente-->
+    </script> 
+    <!-- Creando nuevo producto-->
     <script>
         $(".form-clientes").submit(function() {
+            if ($('#precio').val() < 600) {
+                Swal.fire('No se puede almacemnar porque el costo es menor a $600');
+            }else if($('#stock').val() < 1000 || $('#stock').val() > 100000){
+                Swal.fire('No se puede almacemnar porque el stock excede el requerimiento');
+            }
+            else{
             $.ajax({
-                    url: base_url + 'Cliente/registro',
+                    url: base_url + 'Producto/registro',
                     type: 'POST',
                     dataType: 'json',
                     data: $(this).serialize(),
@@ -206,31 +176,28 @@
                     alert_top("error", "Error, intente más tarde"); //este error se muestra si no existe conexion con el back
                 });
 
-            return false;
+        }
+        return false;
 
         });
     </script>
     <!-- Actualizando registros-->
-    <script>
+     <script>
         $('#actualizarbtn').click(function() {
             //alert('Haz hecho clic en el botón actualizar!'+ identicador );
-            var id_cliente = $('#id_cliente').val();
-            console.log(id_cliente);
+            var id_producto = $('#id_producto').val();
+            console.log(id_producto);
 
             //
             $.ajax({
-                    url: base_url + 'Cliente/actualizar',
+                    url: base_url + 'Producto/actualizar',
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        id_cliente: $('#id_cliente').val(),
+                        id_producto: $('#id_producto').val(),
                         nombre: $('#nombre').val(),
-                        apellido: $('#apellido').val(),
-                        direccion: $('#direccion').val(),
-                        fecha_nacimiento: $('#fecha_nacimiento').val(),
-                        telefono: $('#telefono').val(),
-                        email: $('#email').val(),
-                        id_categoria: $('#categoria').val()
+                        precio: $('#precio').val(),
+                        stock: $('#stock').val(),
                     }
 
                 })
@@ -240,7 +207,7 @@
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
-                            title: 'Clientea Actualizados con exito',
+                            title: 'Producto Actualizados con exito',
                             showConfirmButton: false,
                             timer: 1500
 
@@ -249,7 +216,7 @@
                         // location.href=data.msj.redirect
                     } else {
                         console.log("error", data.msj.error + " code=" + data.code);
-                        Swal.fire('No se pudieron almacemnar os datos')
+                        Swal.fire('No se pudieron almacemnar los productos')
                     }
                 })
                 .fail(function() {
@@ -259,13 +226,13 @@
             return false;
 
         });
-    </script>
+    </script> 
     <!-- Eliminando registros-->
-    <script>
+     <script>
         $('#eliminarbtn').click(function() {
             //alert('Haz hecho clic en el botón actualizar!'+ identicador );
-            var id_cliente = $('#id_cliente').val();
-            console.log(id_cliente);
+            var id_producto = $('#id_producto').val();
+            console.log(id_producto);
             //
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
@@ -287,11 +254,11 @@
                 if (result.isConfirmed) {
                     //
                     $.ajax({
-                            url: base_url + 'Cliente/eliminar',
+                            url: base_url + 'Producto/eliminar',
                             type: 'POST',
                             dataType: 'json',
                             data: {
-                                id_cliente: $('#id_cliente').val()
+                                id_producto: $('#id_producto').val()
                             }
 
                         })

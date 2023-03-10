@@ -27,7 +27,7 @@
                             <div class="card-body">
                                 <h5 class="card-title  text-center">Productos</h5>
                                 <p class="card-text">CRUD de Productos</p>
-                                <a href="#" class="btn btn-success imagen">ir a productos</a>
+                                <a href="<?= base_url() ?>productos" class="btn btn-success imagen">ir a productos</a>
                             </div>
                         </div>
                         <!--card3 -->
@@ -38,7 +38,7 @@
                             <div class="card-body">
                                 <h5 class="card-title text-center">Facturas</h5>
                                 <p class="card-text">CRUD de facturas</p>
-                                <a href="#" class="btn btn-primary imagen">ir a facturas</a>
+                                <a href="<?= base_url() ?>facturas" class="btn btn-primary imagen">ir a facturas</a>
                             </div>
                         </div>
                     </div>

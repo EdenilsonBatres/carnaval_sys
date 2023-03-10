@@ -1,13 +1,13 @@
 <?= view('commons/head'); ?>
 <header>
-    <div class="form-row">
+<div class="form-row">
 
         <div class="form-group col-md-4"><br>
             <a href="<?= base_url() ?>"><img src="<?= base_url() ?>/public/img/return.png" class="imagen" alt="..." width="30">
             </a>
         </div>
         <div class="form-group col-md-4">
-            <h3 class="titulo">Clientes</h3>
+            <h3 class="titulo">Facturas</h3>
         </div>
         <div class="form-group col-md-4">
 
@@ -19,53 +19,24 @@
 
     <div><!-- contenedor principal-->
         <div class="container">
-            <form class="form-clientes" method="POST">
+            <form class="form-facturas" method="POST">
                 <div class="form-row">
                     <!-- -->
-                    <input type="number" id="id_cliente" name="id_cliente" hidden>
+                    <input type="number" id="id_factura" name="id_factura" hidden>
                     <!-- -->
                     <div class="form-group col-md-4">
-                        <label for="inputEmail4">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre del cliente" required>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputPassword4">Apellido</label>
-                        <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Apellido del cliente" required>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="inputAddress">Direccion</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion" placeholder="1234 Main St" required>
-                    </div>
-                </div>
-
-
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label for="date">Fecha nacimiento</label>
-                        <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" placeholder=" ">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="telefono">Telefono</label>
-                        <input type="text" class="form-control" id="telefono" name="telefono" placeholder="+(503) 7777-5555" required>
-                    </div>
-
-                    <div class="form-group col-md-3">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="emaildelcliente@email.com" required>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="inputState">Categoria</label>
-                        <select id="categoria" class="form-control" name="categoria" required>
+                        <label for="inputState">Clientes</label>
+                        <select id="clientes" class="form-control" name="clientes" required>
                             <option>Selecciona...</option>
-                            <option value="1" selected>Uno</option>
-                            <option value="2">Dos</option>
-                            <option value="3">Tres</option>
                         </select>
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <button type="submit" class="btn btn-primary" id="guardarbtn">Guardar</button>
+                    <div class="form-group col-md-4">
+                        <label for="inputPassword4">Fecha</label>
+                        <input type="date" class="form-control" id="fecha" name="fecha" placeholder=" ">
+                    </div>
+                    <div class="form-group col-md-4">
+                    <label for="inputPassword4"></label>
+                        <button type="submit" class="btn btn-primary btn-block" id="guardarbtn">Generar Factura</button>
                     </div>
                 </div>
             </form>
@@ -80,21 +51,17 @@
 
 
             <br>
-            <h4>Clientes registrados</h4>
+            <h4>Facturas Generadas</h4>
             <h6>Da click sobre la fila que desees editar</h6>
             <br>
             <!--tabla -->
-            <table class="table table-striped table-dark" id="clientTable">
+            <table class="table table-striped table-dark" id="facturasTable">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Apellido</th>
-                        <th scope="col">Direccion</th>
-                        <th scope="col">fecha Nacimiento</th>
-                        <th scope="col">Telefono</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Categoria</th>
+                        <th scope="col">id_cliente</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Fecha</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -108,31 +75,22 @@
 
     </div>
     <?= view('commons/footer'); ?>
-    <!--verificando el estado del form -->
-    <script>
-        $(window).on('load', function() {
-            if ($('#id_cliente').val() == '') {
-                console.log(" no existe un identidicador, no hay registro a editar");
-                $('#actualizarbtn').prop('disabled', true);
-                $('#eliminarbtn').prop('disabled', true);
-            }
-        });
-    </script>
-    <!--Leyendo informacion de la base de datos -->
+    <!-- cargando selector-->
     <script>
         $(document).ready(function() {
             $.ajax({
-                    url: base_url + 'Cliente/readClient',
+                    url: base_url + 'Factura/cargandoClientes',
                     type: 'POST',
                     dataType: 'json',
                 })
                 .done(function(data) {
                     if (data.code == 200) {
-                        console.log("success", data.msj.success);
+                        console.log("success", data.msj);
                         // location.reload();
+                       // console.log(data);
                         $.each(data.data, function(idx, opt) {
-                            $('#clientTable').append('<tr><td>' + opt.id_cliente + '</td><td>' + opt.nombre + '</td><td>' + opt.apellido + '</td><td>' + opt.direccion + '</td><td>' + opt.fecha_nacimiento + '</td><td>' + opt.telefono + '</td><td>' + opt.email + '</td><td>' + opt.id_categoria);
-                        });
+                            $('#clientes').append('<option value="' + opt.id_cliente + '">' + opt.nombre + '</option>');    
+                            });
                     } else {
                         console.log("error", data.msj.error + " code=" + data.code);
                     }
@@ -146,39 +104,68 @@
 
         });
     </script>
+    <!--verificando el estado del form -->
+      <script>
+        $(window).on('load', function() {
+            if ($('#id_factura').val() == '') {
+                console.log(" no existe un identidicador, no hay registro a editar");
+                $('#actualizarbtn').prop('disabled', true);
+                $('#eliminarbtn').prop('disabled', true);
+            }
+        });
+    </script>  
+    <!--Leyendo informacion de la base de datos -->
+      <script>
+        $(document).ready(function() {
+            $.ajax({
+                    url: base_url + 'Factura/readFactura',
+                    type: 'POST',
+                    dataType: 'json',
+                })
+                .done(function(data) {
+                    if (data.code == 200) {
+                        console.log("success", data.msj.success);
+                        // location.reload();
+                        $.each(data.data, function(idx, opt) {
+                            $('#facturasTable').append('<tr><td>' + opt.num_factura + '</td><td>' + opt.id_cliente + '</td><td>' + opt.nombre + '</td><td>' + opt.fecha );
+                        });
+                    } else {
+                        console.log("error", data.msj.error + " code=" + data.code);
+                    }
+                })
+                .fail(function() {
+                    console.log("Error, no se pudieron mostrar los datos");
+                });
+
+            return false;
+
+
+        });
+    </script> 
     <!--Manipulando los registros de la tabla -->
-    <script>
-        $('#clientTable').on('click', 'tr', function() {
+      <script>
+        $('#facturasTable').on('click', 'tr', function() {
             var fila = $(this);
-            var id_cliente = fila.find('td:eq(0)').text();
-            var nombre = fila.find('td:eq(1)').text();
-            var apellido = fila.find('td:eq(2)').text();
-            var direccion = fila.find('td:eq(3)').text();
-            var fecha_nacimiento = fila.find('td:eq(4)').text();
-            var telefono = fila.find('td:eq(5)').text();
-            var email = fila.find('td:eq(6)').text();
-            var id_categoria = fila.find('td:eq(7)').text();
+            var id_factura = fila.find('td:eq(0)').text();
+            var id_cliente = fila.find('td:eq(1)').text();
+            var fecha = fila.find('td:eq(3)').text();
+            
 
-            $('#id_cliente').val(id_cliente);
-            $('#nombre').val(nombre);
-            $('#apellido').val(apellido);
-            $('#direccion').val(direccion);
-            $('#fecha_nacimiento').val(fecha_nacimiento);
-            $('#telefono').val(telefono);
-            $('#email').val(email);
-            $('#categoria').val(id_categoria);
-
+            $('#id_factura').val(id_factura);
+            $('#clientes').val(id_cliente);
+            $('#fecha').val(fecha);
+           
             $('#actualizarbtn').prop('disabled', false);
             $('#eliminarbtn').prop('disabled', false);
             $('#guardarbtn').prop('disabled', true);
 
         });
-    </script>
-    <!-- Creando nuevo cliente-->
+    </script>  
+    <!-- Creando nuevo factura-->
     <script>
-        $(".form-clientes").submit(function() {
+        $(".form-facturas").submit(function() {
             $.ajax({
-                    url: base_url + 'Cliente/registro',
+                    url: base_url + 'Factura/registro',
                     type: 'POST',
                     dataType: 'json',
                     data: $(this).serialize(),
@@ -190,7 +177,7 @@
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
-                            title: 'Clientea almacenados con exito',
+                            title: 'Factura almacenadas con exito',
                             showConfirmButton: false,
                             timer: 1500
 
@@ -199,38 +186,34 @@
                         // location.href=data.msj.redirect
                     } else {
                         console.log("error", data.msj.error + " code=" + data.code);
-                        Swal.fire('No se pudieron almacemnar os datos')
+                        Swal.fire('No se pudieron almacemnar los datos')
                     }
                 })
                 .fail(function() {
                     alert_top("error", "Error, intente más tarde"); //este error se muestra si no existe conexion con el back
                 });
 
-            return false;
+        
+        return false;
 
         });
     </script>
     <!-- Actualizando registros-->
-    <script>
+      <script>
         $('#actualizarbtn').click(function() {
             //alert('Haz hecho clic en el botón actualizar!'+ identicador );
-            var id_cliente = $('#id_cliente').val();
-            console.log(id_cliente);
+            var id_factura = $('#id_factura').val();
+            console.log(id_factura);
 
             //
             $.ajax({
-                    url: base_url + 'Cliente/actualizar',
+                    url: base_url + 'Factura/actualizar',
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        id_cliente: $('#id_cliente').val(),
-                        nombre: $('#nombre').val(),
-                        apellido: $('#apellido').val(),
-                        direccion: $('#direccion').val(),
-                        fecha_nacimiento: $('#fecha_nacimiento').val(),
-                        telefono: $('#telefono').val(),
-                        email: $('#email').val(),
-                        id_categoria: $('#categoria').val()
+                        id_factura: $('#id_factura').val(),
+                        id_cliente: $('#clientes').val(),
+                        fecha: $('#fecha').val()
                     }
 
                 })
@@ -240,7 +223,7 @@
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
-                            title: 'Clientea Actualizados con exito',
+                            title: 'Factura Actualizada con exito',
                             showConfirmButton: false,
                             timer: 1500
 
@@ -249,7 +232,7 @@
                         // location.href=data.msj.redirect
                     } else {
                         console.log("error", data.msj.error + " code=" + data.code);
-                        Swal.fire('No se pudieron almacemnar os datos')
+                        Swal.fire('No se pudieron almacenar las facturas')
                     }
                 })
                 .fail(function() {
@@ -259,13 +242,13 @@
             return false;
 
         });
-    </script>
+    </script>  
     <!-- Eliminando registros-->
-    <script>
+     <script>
         $('#eliminarbtn').click(function() {
             //alert('Haz hecho clic en el botón actualizar!'+ identicador );
-            var id_cliente = $('#id_cliente').val();
-            console.log(id_cliente);
+            var id_factura = $('#id_factura').val();
+            console.log(id_factura);
             //
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
@@ -287,11 +270,11 @@
                 if (result.isConfirmed) {
                     //
                     $.ajax({
-                            url: base_url + 'Cliente/eliminar',
+                            url: base_url + 'Factura/eliminar',
                             type: 'POST',
                             dataType: 'json',
                             data: {
-                                id_cliente: $('#id_cliente').val()
+                                id_factura: $('#id_factura').val()
                             }
 
                         })
